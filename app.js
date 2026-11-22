@@ -819,6 +819,7 @@
         </div>
       </div>
     `;
+    runInstallCheck();
     wireProfileForm($('#profileForm', el), data => {
       Object.assign(p, data);
       saveProfiles();
@@ -1257,7 +1258,30 @@
     } else {
       body = 'Åbn browserens menu (⋮) og vælg <b>Installér app</b> eller <b>Føj til startskærm</b>.';
     }
-    return `<div class="card"><div class="card-head"><h3>📱 Installér på telefonen</h3></div><p class="muted small" style="margin:0">${body}</p></div>`;
+    return `<div class="card"><div class="card-head"><h3>📱 Installér på telefonen</h3></div><p class="muted small" style="margin:0">${body}</p>
+      <details style="margin-top:8px"><summary>Tjek om alt er på plads</summary><div id="installCheck" class="small" style="margin-top:6px">Tjekker…</div></details></div>`;
+  }
+
+  // Tjekker de ting, browseren kræver for at kunne installere appen
+  async function runInstallCheck() {
+    const el = $('#installCheck');
+    if (!el) return;
+    const exists = async url => {
+      try { const r = await fetch(url + '?check=' + Date.now(), { cache: 'no-store' }); return r.ok; } catch (e) { return false; }
+    };
+    const checks = [];
+    checks.push(['Sikker forbindelse (https)', window.isSecureContext && location.protocol !== 'file:']);
+    const files = ['manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'sw.js'];
+    const found = await Promise.all(files.map(exists));
+    files.forEach((f, i) => checks.push([`Filen ${f} findes`, found[i]]));
+    let swOk = false;
+    try { const reg = await navigator.serviceWorker?.getRegistration(); swOk = !!(reg && (reg.active || reg.waiting || reg.installing)); } catch (e) {}
+    checks.push(['Service worker kører', swOk]);
+    const failed = checks.filter(c => !c[1]);
+    el.innerHTML = checks.map(([label, ok]) => `<div>${ok ? '✅' : '❌'} ${esc(label)}</div>`).join('') +
+      (failed.length
+        ? `<div class="warn-box" style="margin-top:8px">Mangler du filer, så upload dem til samme sted som index.html på GitHub. Vent et par minutter, og genindlæs siden.</div>`
+        : `<div class="note" style="margin-top:8px">Alt ser fint ud. Kan Chrome stadig ikke installere appen, så luk fanen, åbn adressen igen, og vælg ⋮ → Installér app / Føj til startskærm.</div>`);
   }
 
   function startNewProfile() {

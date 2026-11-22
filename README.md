@@ -8,7 +8,7 @@ Ren HTML/CSS/JavaScript uden afhængigheder eller build-trin. Åbn `index.html` 
 
 Appen er en PWA (Progressive Web App). Den kan installeres med eget ikon, åbner i fuld skærm og virker uden internet (undtagen Open Food Facts). En telefon kan **ikke** installere den fra en lokal fil eller en zip – den skal ligge på en https-adresse. GitHub Pages er gratis og nemmest:
 
-1. Læg alle filerne i roden af et GitHub-repo (fx `kalorietracker`) – `index.html` skal ligge øverst, ikke i en undermappe.
+1. Læg **alle 12 filer** i roden af et GitHub-repo (fx `kalorietracker`) – `index.html` skal ligge øverst, ikke i en undermappe. Der er ingen undermapper, så alle filer kan vælges på én gang med **Add file → Upload files**. Mangler ikonerne eller `manifest.webmanifest`, kan appen ikke installeres. Under Profil → Installér på telefonen → *Tjek om alt er på plads* viser appen, hvad der mangler.
 2. På GitHub: **Settings → Pages → Build and deployment → Source: Deploy from a branch**, vælg `main` og mappen `/ (root)`, og tryk **Save**.
 3. Efter et minut eller to er appen live på `https://<brugernavn>.github.io/kalorietracker/`.
 4. Åbn adressen på telefonen:
@@ -46,7 +46,7 @@ Når du lægger en ny version op, så hæv versionsnummeret i `CACHE` øverst i 
 | `foods.js` | Basisdatabase med vejledende næringsværdier pr. 100 g |
 | `manifest.webmanifest` | Navn, ikon og farver til installation på telefon |
 | `sw.js` | Service worker – installation og offline-brug |
-| `icons/` | App-ikoner |
+| `` | App-ikoner |
 
 ## Data
 

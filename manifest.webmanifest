@@ -1,6 +1,6 @@
 {
-  "name": "Kalorietracker",
-  "short_name": "Kalorier",
+  "name": "Diet",
+  "short_name": "Diet",
   "description": "Track kalorier, næringsstoffer, vand og vægt",
   "lang": "da",
   "start_url": "./",

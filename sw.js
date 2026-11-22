@@ -2,7 +2,7 @@
  * Netværk først for appens egne filer (så opdateringer slår igennem), cache som reserve.
  * Open Food Facts og andre eksterne kald går altid direkte til netværket.
  */
-const CACHE = 'kalorietracker-v3';
+const CACHE = 'diet-v4';
 const SHELL = [
   './', './index.html', './styles.css', './app.js', './foods.js', './manifest.webmanifest',
   './icon-192.png', './icon-512.png', './icon-maskable-512.png',

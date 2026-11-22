@@ -1,4 +1,4 @@
-/* Kalorietracker – ren JavaScript, ingen afhængigheder.
+/* Diet – ren JavaScript, ingen afhængigheder.
  * Data gemmes i browserens localStorage pr. profil.
  */
 (function () {
@@ -1312,7 +1312,7 @@
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = `kalorietracker-backup-${todayKey()}.json`;
+    a.download = `diet-backup-${todayKey()}.json`;
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
     toast('Backup downloadet');
@@ -1404,7 +1404,7 @@
   // ================================================================
   // Offentligt API til senere integration med træningsapps
   // ================================================================
-  window.Kalorietracker = {
+  window.Diet = window.Kalorietracker = {
     /** Tilføj træning for en dato: { date:'YYYY-MM-DD', name, kcal, minutes, source, externalId } */
     addExercise(x) {
       if (!state.data) return false;

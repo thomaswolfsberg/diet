@@ -1,4 +1,4 @@
-# Kalorietracker
+# Diet
 
 En lokal web-app til at tracke kalorier, makro- og mikronæringsstoffer samt vand og vægt – med mål om at tabe, holde eller tage på i vægt.
 
@@ -8,9 +8,9 @@ Ren HTML/CSS/JavaScript uden afhængigheder eller build-trin. Åbn `index.html` 
 
 Appen er en PWA (Progressive Web App). Den kan installeres med eget ikon, åbner i fuld skærm og virker uden internet (undtagen Open Food Facts). En telefon kan **ikke** installere den fra en lokal fil eller en zip – den skal ligge på en https-adresse. GitHub Pages er gratis og nemmest:
 
-1. Læg **alle 12 filer** i roden af et GitHub-repo (fx `kalorietracker`) – `index.html` skal ligge øverst, ikke i en undermappe. Der er ingen undermapper, så alle filer kan vælges på én gang med **Add file → Upload files**. Mangler ikonerne eller `manifest.webmanifest`, kan appen ikke installeres. Under Profil → Installér på telefonen → *Tjek om alt er på plads* viser appen, hvad der mangler.
+1. Læg **alle 12 filer** i roden af et GitHub-repo (fx `diet`) – `index.html` skal ligge øverst, ikke i en undermappe. Der er ingen undermapper, så alle filer kan vælges på én gang med **Add file → Upload files**. Mangler ikonerne eller `manifest.webmanifest`, kan appen ikke installeres. Under Profil → Installér på telefonen → *Tjek om alt er på plads* viser appen, hvad der mangler.
 2. På GitHub: **Settings → Pages → Build and deployment → Source: Deploy from a branch**, vælg `main` og mappen `/ (root)`, og tryk **Save**.
-3. Efter et minut eller to er appen live på `https://<brugernavn>.github.io/kalorietracker/`.
+3. Efter et minut eller to er appen live på `https://<brugernavn>.github.io/diet/`.
 4. Åbn adressen på telefonen:
    - **iPhone:** Åbn i **Safari** → tryk **Del** (firkant med pil op) → **Føj til hjemmeskærm**.
    - **Android:** Åbn i **Chrome** → menu **⋮** → **Installér app** (eller tryk på knappen under Profil i appen).
@@ -60,17 +60,17 @@ Data deles ikke mellem browsere eller enheder. Brug eksport/import for at flytte
 
 ## Integration med træningsapps (forberedt)
 
-Appen eksponerer et lille API på `window.Kalorietracker`:
+Appen eksponerer et lille API på `window.Diet` (også tilgængeligt som `window.Kalorietracker`):
 
 ```js
 // Tilføj træning (dubletter undgås via externalId)
-Kalorietracker.addExercise({
+Diet.addExercise({
   date: '2026-11-22', name: 'Løb', kcal: 320, minutes: 30,
   source: 'Løbeapp', externalId: 'run-123'
 });
 
 // Hent dagsoversigt: indtag, mål og træning
-Kalorietracker.getDay('2026-11-22');
+Diet.getDay('2026-11-22');
 ```
 
 Træningsregistreringer har feltet `source`, så de kan skelnes fra manuelle. Hvis apps'ene kører på samme domæne (fx samme GitHub Pages-site), kan de læse og skrive hinandens `localStorage` direkte. Ellers kan de udveksle data via JSON-eksport/import.

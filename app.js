@@ -808,6 +808,8 @@
           </div>`).join('') : '<div class="empty">Du har ikke oprettet egne fødevarer endnu. Det gør du via "+ Tilføj" i dagbogen.</div>'}
       </div>
 
+      ${installCardHTML()}
+
       <div class="card">
         <div class="card-head"><h3>Data og backup</h3></div>
         <p class="muted small" style="margin:0 0 10px">Alle data ligger kun i denne browser. Tag en backup jævnligt, eller hvis du vil flytte til en anden enhed.</p>
@@ -1236,6 +1238,28 @@
     });
   }
 
+  // ---------- Installation på telefon ----------
+  let installPrompt = null;
+  function isInstalled() {
+    return window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  }
+  function installCardHTML() {
+    if (isInstalled()) return '';
+    const ua = navigator.userAgent;
+    const ios = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    let body;
+    if (location.protocol === 'file:') {
+      body = 'Appen er åbnet som en lokal fil og kan derfor ikke installeres. Læg den på GitHub Pages (se README), og åbn adressen på telefonen.';
+    } else if (installPrompt) {
+      body = `Installér appen, så den får sit eget ikon og åbner i fuld skærm.<div style="margin-top:8px"><button class="btn primary" data-act="install">📲 Installér app</button></div>`;
+    } else if (ios) {
+      body = 'Åbn siden i <b>Safari</b>, tryk på <b>Del</b>-knappen (firkant med pil op) og vælg <b>Føj til hjemmeskærm</b>.';
+    } else {
+      body = 'Åbn browserens menu (⋮) og vælg <b>Installér app</b> eller <b>Føj til startskærm</b>.';
+    }
+    return `<div class="card"><div class="card-head"><h3>📱 Installér på telefonen</h3></div><p class="muted small" style="margin:0">${body}</p></div>`;
+  }
+
   function startNewProfile() {
     $$('.view').forEach(v => { v.hidden = true; v.innerHTML = ''; });
     renderOnboarding(true);
@@ -1347,6 +1371,9 @@
         saveData(); render(); break;
       case 'export': exportData(); break;
       case 'import': importData(); break;
+      case 'install':
+        if (installPrompt) { installPrompt.prompt(); installPrompt.userChoice.finally(() => { installPrompt = null; render(); }); }
+        break;
     }
   });
 
@@ -1377,4 +1404,17 @@
   if (state.activeId && !state.profiles.some(p => p.id === state.activeId)) state.activeId = state.profiles[0]?.id || null;
   loadData();
   render();
+
+  // Installation som app (PWA) – kræver https, fx GitHub Pages
+  if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+    window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+  }
+  // Bed browseren om ikke at slette data automatisk (vigtigt på iPhone)
+  if (navigator.storage?.persist) navigator.storage.persist().catch(() => {});
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    installPrompt = e;
+    if (state.view === 'profile') render();
+  });
+  window.addEventListener('appinstalled', () => { installPrompt = null; toast('Appen er installeret'); });
 })();
